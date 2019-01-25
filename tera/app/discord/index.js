@@ -392,16 +392,26 @@ module.exports = function Discord (dispatch, config) {
     ipc.send('sysmsg', `Guild funds have been delivered via parcel post.`)
   })
 
-  sysmsg.on('SMT_GQUEST_URGENT_NOTIFY', (params) => {
-    // TODO: rally notification is broken
-    var d = new Date()
-    var today = d.getDay()
-    if (today !== 2 && today !== 5) {
-      ipc.send('rally', `@rally BAM spawning soon!`)
-    } else {
-      ipc.send('rally', `@rally (PVP) BAM spawning soon!`)
-    }
+  const rallyType = new Map([
+    ['@GuildQuest:6001001', 'Anansha'],
+    ['@GuildQuest:6002001', 'Frygaras'],
+    ['@GuildQuest:6003001', 'Sabranak']])
+
+  dispatch.on('S_NOTIFY_GUILD_QUEST_URGENT', 1, (event) => {
+    console.log(JSON.stringify(event))
+    ipc.send('rally', `@rally BAM (${rallyType.get(event.quest)}) spawning soon!`)
   })
+
+  // sysmsg.on('SMT_GQUEST_URGENT_NOTIFY', (params) => {
+  //   // TODO: rally notification is broken
+  //   var d = new Date()
+  //   var today = d.getDay()
+  //   if (today !== 2 && today !== 5) {
+  //     ipc.send('rally', `@rally BAM spawning soon!`)
+  //   } else {
+  //     ipc.send('rally', `@rally (PVP) BAM spawning soon!`)
+  //   }
+  // })
 
   /****************
    * Misc Notices *
