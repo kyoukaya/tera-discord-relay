@@ -1,14 +1,11 @@
 // config
 const fs = require('fs')
-const fn = 'config\\config.json'
+const path = require('path')
+const fn = process.argv[2]
 
 if (fn == null) {
   console.error('please specify config file')
   process.exit(1)
-}
-
-global.TeraProxy = {
-  DevMode: false
 }
 
 const config = JSON.parse(fs.readFileSync(fn, 'utf8'))
@@ -145,7 +142,7 @@ web.getLogin((err, data) => {
   // load modules
   for (const moduleName in config.modules) {
     const moduleConfig = config.modules[moduleName]
-    connection.dispatch.load('C:\\tera-discord-relay\\tera\\app\\' + moduleName, module, moduleConfig)
+    connection.dispatch.load(path.join(__dirname, 'app', moduleName, module, moduleConfig))
   }
 
   // logging
