@@ -1,166 +1,171 @@
 // config
-const fs = require('fs');
-const fn = process.argv[2];
+const fs = require('fs')
+const fn = 'config\\config.json'
 
 if (fn == null) {
-  console.error('please specify config file');
-  process.exit(1);
+  console.error('please specify config file')
+  process.exit(1)
 }
 
-const config = JSON.parse(fs.readFileSync(fn, 'utf8'));
+global.TeraProxy = {
+  DevMode: false
+}
+
+const config = JSON.parse(fs.readFileSync(fn, 'utf8'))
 
 // client
-const webClient = require('tera-auth-ticket');
-const { Connection, FakeClient } = require('tera-proxy-game');
+const WebClient = require('tera-auth-ticket-sea')
+const { Connection, FakeClient } = require('tera-proxy-game')
 
 const describe = (() => {
-  const races = ['Human', 'High Elf', 'Aman', 'Castanic', 'Popori', 'Baraka'];
-  const genders = ['Male', 'Female'];
+  const races = ['Human', 'High Elf', 'Aman', 'Castanic', 'Popori', 'Baraka']
+  const genders = ['Male', 'Female']
 
   const classes = [
     'Warrior', 'Lancer', 'Slayer', 'Berserker', 'Sorcerer', 'Archer',
-    'Priest', 'Mystic', 'Reaper', 'Gunner', 'Brawler', 'Ninja', 'Valkyrie',
-  ];
+    'Priest', 'Mystic', 'Reaper', 'Gunner', 'Brawler', 'Ninja', 'Valkyrie'
+  ]
 
-  return function describe(character) {
-    let description = '';
+  return function describe (character) {
+    let description = ''
 
     // race & gender
-    const race = races[character.race] || '?';
-    const gender = genders[character.gender] || '?';
+    const race = races[character.race] || '?'
+    const gender = genders[character.gender] || '?'
 
     if (character.race < 4) {
-      description += `${race} ${gender}`;
+      description += `${race} ${gender}`
     } else {
       if (character.race === 4 && character.gender === 1) {
-        description += 'Elin';
+        description += 'Elin'
       } else {
-        description += race;
+        description += race
       }
     }
 
     // class
-    description += ' ' + (classes[character['class']] || '?') + ' / ';
+    description += ' ' + (classes[character['class']] || '?') + ' / '
 
     // level
-    description += character.level;
+    description += character.level
 
     // return
-    return description;
-  };
-})();
+    return description
+  }
+})()
 
 // main
-const web = new webClient(config.email, config.pass);
+const web = new WebClient(config.email, config.pass)
 web.getLogin((err, data) => {
-  if (err) return;
+  if (err) return
 
-  const connection = new Connection();
-  const client = new FakeClient(connection);
-  const srvConn = connection.connect(client, { host: config.host, port: config.port });
+  const connection = new Connection()
+  const client = new FakeClient(connection)
+  const srvConn = connection.connect(client, { host: config.host, port: config.port })
 
-  let closed = false;
+  let closed = false
 
-  function closeClient() {
-    if (closed) return;
+  function closeClient () {
+    if (closed) return
 
-    closed = true;
-    client.close();
+    closed = true
+    client.close()
 
     setImmediate(() => {
-      process.exit();
-    });
+      process.exit()
+    })
   }
 
-  connection.dispatch.setProtocolVersion(config.protocolVersion);
-  
+  connection.dispatch.setProtocolVersion(config.protocolVersion)
+
   // set up core bot features
-  connection.dispatch.load('<core>', function coreModule(dispatch) {
+  connection.dispatch.load('<core>', function coreModule (dispatch) {
     // `connect` handler
     client.on('connect', () => {
       // authorization
-      dispatch.toServer('C_LOGIN_ARBITER', 1, {
+      dispatch.toServer('C_LOGIN_ARBITER', 2, {
         unk1: 0,
         unk2: 0,
-        unk3: 2,
+        language: 11,
         patchVersion: config.patchVersion,
         name: data.name,
-        ticket: new Buffer(data.ticket),
-      });
-    });
+        ticket: Buffer.from(data.ticket)
+      })
+    })
 
     // get character list
-    dispatch.hook('S_LOGIN_ACCOUNT_INFO', 1, () => {
-      dispatch.toServer('C_GET_USER_LIST', 1);
-    });
+    dispatch.hook('S_LOGIN_ACCOUNT_INFO', 2, () => {
+      dispatch.toServer('C_GET_USER_LIST', 1)
+    })
 
-    dispatch.hook('S_GET_USER_LIST', 1, (event) => {
+    dispatch.hook('S_GET_USER_LIST', 15, (event) => {
       // parse character list
-      const characters = new Map();
+      const characters = new Map()
       for (const character of event.characters) {
         characters.set(character.name.toLowerCase(), {
           id: character.id,
-          description: `${character.name} [${describe(character)}]`,
-        });
+          description: `${character.name} [${describe(character)}]`
+        })
       }
 
       // find matching character
-      const character = characters.get(config.character.toLowerCase());
+      const character = characters.get(config.character.toLowerCase())
       if (!character) {
-        console.error(`[client] no character "${config.character}"`);
-        console.error('[client] character list:');
+        console.error(`[client] no character "${config.character}"`)
+        console.error('[client] character list:')
         for (const char of characters.values()) {
-          console.error(`- ${char.description} (id: ${char.id})`);
+          console.error(`- ${char.description} (id: ${char.id})`)
         }
       } else {
-        console.log(`[client] logging onto ${character.description} (id: ${character.id})`);
+        console.log(`[client] logging onto ${character.description} (id: ${character.id})`)
         dispatch.toServer('C_SELECT_USER', 1, {
           id: character.id,
-          unk: 0,
-        });
+          unk: 0
+        })
       }
-    });
+    })
 
     // login sequence
-    dispatch.hook('S_LOAD_TOPO', 1, () => {
-      dispatch.toServer('C_LOAD_TOPO_FIN', 1);
-    });
+    dispatch.hook('S_LOAD_TOPO', 3, () => {
+      dispatch.toServer('C_LOAD_TOPO_FIN', 1)
+      console.log(`[client] logged in`)
+    })
 
     // ping-pong
     dispatch.hook('S_PING', 1, () => {
-      dispatch.toServer('C_PONG', 1);
-    });
+      dispatch.toServer('C_PONG', 1)
+    })
 
     // terminate when connection ends
     client.on('close', () => {
-      closeClient();
-    });
-  });
+      closeClient()
+    })
+  })
 
   // load modules
   for (const moduleName in config.modules) {
-    const moduleConfig = config.modules[moduleName];
-    connection.dispatch.load('./app/' + moduleName, module, moduleConfig);
+    const moduleConfig = config.modules[moduleName]
+    connection.dispatch.load('C:\\tera-discord-relay\\tera\\app\\' + moduleName, module, moduleConfig)
   }
 
   // logging
-  srvConn.setTimeout(30 * 1000);
+  srvConn.setTimeout(30 * 1000)
 
   srvConn.on('connect', () => {
-    console.log(`<connected to ${srvConn.remoteAddress}:${srvConn.remotePort}>`);
-  });
+    console.log(`<connected to ${srvConn.remoteAddress}:${srvConn.remotePort}>`)
+  })
 
   srvConn.on('timeout', () => {
-    console.log('<timeout>');
-    closeClient();
-  });
+    console.log('<timeout>')
+    closeClient()
+  })
 
   srvConn.on('close', () => {
-    console.log('<disconnected>');
-    process.exit();
-  });
+    console.log('<disconnected>')
+    process.exit()
+  })
 
   srvConn.on('error', (err) => {
-    console.warn(err);
-  });
-});
+    console.warn(err)
+  })
+})
