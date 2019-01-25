@@ -142,7 +142,7 @@ web.getLogin((err, data) => {
   // load modules
   for (const moduleName in config.modules) {
     const moduleConfig = config.modules[moduleName]
-    connection.dispatch.load(path.join(__dirname, 'app', moduleName, module, moduleConfig))
+    connection.dispatch.load(path.join(__dirname, 'app', moduleName), module, moduleConfig)
   }
 
   // logging
