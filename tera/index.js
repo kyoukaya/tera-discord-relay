@@ -56,7 +56,10 @@ const web = new WebClient(config.email, config.pass)
 web.getLogin((err, data) => {
   if (err) return
 
-  const connection = new Connection()
+  const connection = new Connection({
+    protocolVersion: config.protocolVersion
+  })
+
   const client = new FakeClient(connection)
   const srvConn = connection.connect(client, { host: config.host, port: config.port })
 
@@ -72,8 +75,6 @@ web.getLogin((err, data) => {
       process.exit()
     })
   }
-
-  connection.dispatch.setProtocolVersion(config.protocolVersion)
 
   // set up core bot features
   connection.dispatch.load('<core>', function coreModule (dispatch) {
