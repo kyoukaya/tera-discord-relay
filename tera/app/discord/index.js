@@ -397,7 +397,7 @@ module.exports = function Discord (dispatch, config) {
     ['@GuildQuest:6002001', 'Frygaras'],
     ['@GuildQuest:6003001', 'Sabranak']])
 
-  dispatch.on('S_NOTIFY_GUILD_QUEST_URGENT', 1, (event) => {
+  dispatch.hook('S_NOTIFY_GUILD_QUEST_URGENT', 1, (event) => {
     console.log(JSON.stringify(event))
     ipc.send('rally', `@rally BAM (${rallyType.get(event.quest)}) spawning soon!`)
   })
