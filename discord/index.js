@@ -7,45 +7,48 @@ if (fn == null) {
 }
 
 const config = JSON.parse(fs.readFileSync(fn, 'utf8'))
+function main () {
+  // set up bot
+  const Discord = require('discord.js')
+  const bot = new Discord.Client({
+    fetchAllMembers: true,
+    sync: true
+  })
 
-// set up bot
-const Discord = require('discord.js')
-const bot = new Discord.Client({
-  fetchAllMembers: true,
-  sync: true
-})
+  bot.on('ready', () => {
+    console.log('connected as %s (%s)', bot.user.username, bot.user.id)
+    bot.user.setActivity({ game: { name: 'TERA', type: 0 } })
+  })
 
-bot.on('ready', () => {
-  console.log('connected as %s (%s)', bot.user.username, bot.user.id)
-  bot.user.setActivity({ game: { name: 'TERA', type: 0 } })
-})
+  bot.on('warn', (warn) => {
+    console.warn(warn)
+  })
 
-bot.on('warn', (warn) => {
-  console.warn(warn)
-})
+  bot.on('disconnect', () => {
+    console.log('disconnected\nreconnecting...')
+    main()
+  })
 
-bot.on('disconnect', () => {
-  console.log('disconnected')
-  process.exit()
-})
+  // set up ipc
+  const IpcModule = require('./lib/ipc')
+  const ipc = new IpcModule(config['socket-name'])
 
-// set up ipc
-const IpcModule = require('./lib/ipc')
-const ipc = new IpcModule(config['socket-name'])
+  // set up app
+  const app = { bot, ipc }
 
-// set up app
-const app = { bot, ipc }
+  console.log('loading submodules...')
+  for (let name of ['gchat', 'lfg']) {
+    const Submodule = require('./lib/' + name)
+    app[Submodule] = new Submodule(app, config)
+    console.log('- loaded %s', name)
+  }
 
-console.log('loading submodules...')
-for (let name of ['gchat', 'entry']) {
-  const Submodule = require('./lib/' + name)
-  app[Submodule] = new Submodule(app, config)
-  console.log('- loaded %s', name)
+  // connect
+  console.log('connecting...')
+  bot.login(config['token']).catch((reason) => {
+    console.error('failed to login:', reason)
+    process.exit()
+  })
 }
 
-// connect
-console.log('connecting...')
-bot.login(config['token']).catch((reason) => {
-  console.error('failed to login:', reason)
-  process.exit()
-})
+main()

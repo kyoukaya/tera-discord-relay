@@ -20,11 +20,6 @@ module.exports = function gchatModule (app, config) {
       return
     }
 
-    const worldChan = U.getTextChannel(server, config.channels['world'])
-    if (!worldChan) {
-      console.warn('* world channel disabled')
-    }
-
     console.log('routing gchat to #%s (%s)', channel.name, channel.id)
     ipc.send('fetch')
 
@@ -118,12 +113,12 @@ module.exports = function gchatModule (app, config) {
     })
 
     ipc.on('rally', (rally) => {
-      channel.sendMessage(U.emojify(U.toDiscord(U.unHtml(rally), server)))
+      U.sendMessge(channel, U.emojify(U.toDiscord(U.unHtml(rally))))
     })
 
     ipc.on('sysmsg', (message) => {
       // don't convert mentions highlights from TERA login message are abusable
-      channel.sendMessage(U.emojify(U.unHtml(message)), { disable_everyone: true })
+      U.sendMessge(channel, U.emojify(U.unHtml(message)), { disable_everyone: true })
     })
 
     bot.on('message', (message) => {

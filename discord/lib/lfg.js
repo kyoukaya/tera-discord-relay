@@ -1,20 +1,20 @@
 const U = require('./util')
 
 module.exports = function lfgModule (app, config) {
-  if (!config.channels['entry']) return
+  if (!config.channels['lfg']) return
 
   const { bot, ipc } = app
 
   bot.once('ready', () => {
     const server = U.getServer(bot, config['server-id'])
     if (!server) {
-      console.warn('* entry module is disabled')
+      console.warn('* lfg module is disabled')
       return
     }
 
-    const channel = U.getTextChannel(server, config.channels['world'])
+    const channel = U.getTextChannel(server, config.channels['lfg'])
     if (!channel) {
-      console.warn('* world channel disabled')
+      console.warn('* lfg channel disabled')
     }
 
     console.log('routing lfg to #%s (%s)', channel.name, channel.id)
