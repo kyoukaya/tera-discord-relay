@@ -41,7 +41,7 @@ module.exports = function gchatModule (app, config) {
     ipc.on('chat', (author, message) => {
       // convert TERA HTML to Discord text
       message = U.emojify(U.toDiscord(U.unHtml(message), server))
-      channel.sendMessage(`[${author}]: ${message}`)
+      U.sendMessge(channel, `[${author}]: ${message}`)
     })
 
     const guild = {
@@ -124,11 +124,6 @@ module.exports = function gchatModule (app, config) {
     ipc.on('sysmsg', (message) => {
       // don't convert mentions highlights from TERA login message are abusable
       channel.sendMessage(U.emojify(U.unHtml(message)), { disable_everyone: true })
-    })
-
-    ipc.on('world', (author, message) => {
-      message = U.emojify(U.toDiscord(U.unHtml(message), server))
-      worldChan.sendMessage(`[${author}]: ${message}`, { disable_everyone: true })
     })
 
     bot.on('message', (message) => {

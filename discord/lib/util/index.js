@@ -141,6 +141,10 @@ function fromDiscord (message, server) {
   )
 }
 
+function sendMessge (channel, message, options) {
+  channel.send(message, options).then(console.log).catch(console.error)
+}
+
 // exports
 module.exports = {
   escapeRegExp,
@@ -152,5 +156,6 @@ module.exports = {
   getTextChannel,
   getName,
   toDiscord,
-  fromDiscord
+  fromDiscord,
+  sendMessge
 }
