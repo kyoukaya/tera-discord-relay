@@ -113,7 +113,7 @@ module.exports = function gchatModule (app, config) {
     })
 
     ipc.on('rally', (rally) => {
-      U.sendMessge(channel, U.emojify(U.toDiscord(U.unHtml(rally)), server))
+      U.sendMessge(channel, U.emojify(U.toDiscord(U.unHtml(rally), server)))
     })
 
     ipc.on('sysmsg', (message) => {
