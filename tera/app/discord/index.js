@@ -150,7 +150,6 @@ module.exports = function Discord (dispatch, config) {
   let motd = ''
   let allGuildies = []
   let guildMembers = []
-  let inspectSet = new Set()
 
   const GINFO_TYPE = {
     details: 2,
@@ -326,27 +325,27 @@ module.exports = function Discord (dispatch, config) {
   /****************
    * Guild Quests *
    ****************/
-  // dispatch.hook('S_GUILD_QUEST_LIST', 1, (event) => {
-  //   lastUpdate[GINFO_TYPE.quests] = Date.now()
+  dispatch.hook('S_GUILD_QUEST_LIST', 1, (event) => {
+    lastUpdate[GINFO_TYPE.quests] = Date.now()
 
-  //   const quests = event.quests.filter(quest => quest.status !== 0)
+    const quests = event.quests.filter(quest => quest.status !== 0)
 
-  //   ipc.send('quest', quests.map((quest) => {
-  //     const name = conv(quest.name)
+    ipc.send('quest', quests.map((quest) => {
+      const name = conv(quest.name)
 
-  //     if (quest.targets.length === 1 && name != 'Crafting Supplies') {
-  //       const [target] = quest.targets
-  //       return { name, completed: target.completed, total: target.total }
-  //     } else {
-  //       const targets = quest.targets.map(target => ({
-  //         name: conv(`@item:${target.info2}`),
-  //         completed: target.completed,
-  //         total: target.total,
-  //       }))
-  //       return { name, targets }
-  //     }
-  //   }))
-  // })
+      if (quest.targets.length === 1 && name != 'Crafting Supplies') {
+        const [target] = quest.targets
+        return { name, completed: target.completed, total: target.total }
+      } else {
+        const targets = quest.targets.map(target => ({
+          name: conv(`@item:${target.info2}`),
+          completed: target.completed,
+          total: target.total
+        }))
+        return { name, targets }
+      }
+    }))
+  })
 
   dispatch.hook('S_UPDATE_GUILD_QUEST_STATUS', 1, (event) => {
     requestGuildInfo(GINFO_TYPE.quests)
