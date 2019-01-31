@@ -81,13 +81,6 @@ function escape (str) {
 
 // main
 module.exports = function Discord (dispatch, config) {
-  try {
-    require('guild-app-inspector')(dispatch)
-    console.log('guild-app-inspector successfully loaded')
-  } catch (e) {
-    console.warn(`[proxy] failed to load guild-app-inspector`)
-  }
-
   let path = config.socketName
 
   if (process.platform === 'win32') {
@@ -333,7 +326,7 @@ module.exports = function Discord (dispatch, config) {
     ipc.send('quest', quests.map((quest) => {
       const name = conv(quest.name)
 
-      if (quest.targets.length === 1 && name != 'Crafting Supplies') {
+      if (quest.targets.length === 1 && name !== 'Crafting Supplies') {
         const [target] = quest.targets
         return { name, completed: target.completed, total: target.total }
       } else {
