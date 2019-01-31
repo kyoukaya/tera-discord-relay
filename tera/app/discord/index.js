@@ -350,7 +350,6 @@ module.exports = function Discord (dispatch, config) {
   })
 
   sysmsg.on('SMT_GQUEST_NORMAL_ACCEPT', (params) => {
-    console.log(JSON.stringify(params))
     ipc.send('sysmsg', `Accepted **${conv(params['guildQuestName'])}**.`)
   })
 
@@ -398,7 +397,6 @@ module.exports = function Discord (dispatch, config) {
     ['@GuildQuest:6003001', 'Sabranak']])
 
   dispatch.hook('S_NOTIFY_GUILD_QUEST_URGENT', 1, (event) => {
-    console.log(JSON.stringify(event))
     ipc.send('rally', `@rally BAM (${rallyType.get(event.quest)}) spawning soon!`)
   })
 
