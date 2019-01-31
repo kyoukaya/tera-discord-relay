@@ -27,18 +27,49 @@ function escapeHtml (str) {
 }
 
 function escape (str) {
+  // Temporary decensor
   const words = [
-    '.com',
-    'fag',
-    'mmoc',
-    'molest',
-    'nigg'
+    'admin',
+    'aids',
+    'anal',
+    'arse',
+    'baka',
+    'ball',
+    'bastard',
+    'bitch',
+    'christ',
+    'cock',
+    'crap',
+    'cum',
+    'dong',
+    'jesus',
+    'slut',
+    'arse',
+    'ass',
+    'bitch',
+    'butt',
+    'chink',
+    'cum',
+    'cunt',
+    'damn',
+    'event',
+    'fk',
+    'fuck',
+    'gook',
+    'hell',
+    'hitler',
+    'nazi',
+    'nig',
+    'playwith',
+    'sex',
+    'shit',
+    'twat'
   ]
 
   const wordRegex = new RegExp('(' + words.map(escapeRegExp).join('|') + ')', 'gi')
 
   return (escapeHtml(str)
-    .replace(wordRegex, match => match[0] + '&#8206;' + match.slice(1))
+    .replace(wordRegex, match => match[0] + '​' + match.slice(1)) // Zero-width space
     .replace(/w-w/gi, match => match.split('-').join('-&#8206;'))
     .replace(/w{3,}/gi, match => match.split('').join('&#8206;'))
     .replace(/w w w/gi, match => match.split(' ').join('&#8206; '))
