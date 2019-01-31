@@ -207,16 +207,6 @@ module.exports = function Discord (dispatch, config) {
     ipc.send('world', event.name, event.message)
   })
 
-  dispatch.hook('S_WHISPER', 2, (event) => {
-    if (event.recipient === myName) {
-      ipc.send('rwhisper', event.author, event.message)
-      inspectSet.add(event.author)
-      dispatch.toServer('C_REQUEST_USER_PAPERDOLL_INFO', 1, {
-        name: event.author
-      })
-    }
-  })
-
   let player
   let cid
   let model
@@ -239,33 +229,15 @@ module.exports = function Discord (dispatch, config) {
     }
   })
 
-  // dispatch.hook('S_GUILD_APPLY_LIST', 2, (event) => {
-  //   let newCurrentApplicants = new Set()
-  //   for(var i = 0 event.apps[i] !== undefined && i < event.apps.length i++) {
-  //     var currentApp = event.apps[i]
-  //     newCurrentApplicants.add(currentApp.name)
-  //     messageMap.set(currentApp.name, currentApp.message)
-  //     if(!(currentApplicants.has(currentApp.name))) {
-  //       inspectSet.add(currentApp.name)
-  //     }
-  //   }
-  //   currentApplicants = newCurrentApplicants
-  // })
-
-  dispatch.hook('S_USER_PAPERDOLL_INFO', 7, (event) => {
-    if (inspectSet.delete(event.name) && currentApplicants.has(event.name)) {
-      ipc.send('guildapp', `Inspected ` + event.name + ` -- click here to view: http://mt-directory.herokuapp.com/` + event.name)
+  dispatch.hook('S_GUILD_APPLY_LIST', 2, (event) => {
+    let newCurrentApplicants = new Set()
+    for (var i = 0; event.apps[i] !== undefined && i < event.apps.length; i++) {
+      var currentApp = event.apps[i]
+      newCurrentApplicants.add(currentApp.name)
+      messageMap.set(currentApp.name, currentApp.message)
     }
+    currentApplicants = newCurrentApplicants
   })
-
-  setInterval(function () {
-    for (let name of inspectSet) {
-      dispatch.toServer('C_REQUEST_USER_PAPERDOLL_INFO', 1, {
-        name: name
-      })
-      console.log('attempting to inspect ' + name)
-    }
-  }, 25000 + Math.floor(Math.random() * 10000))
 
   function modelToClass (model) {
     const classMap = {
@@ -430,17 +402,6 @@ module.exports = function Discord (dispatch, config) {
   dispatch.hook('S_NOTIFY_GUILD_QUEST_URGENT', 1, (event) => {
     ipc.send('rally', `@rally BAM (${rallyType.get(event.quest)}) spawning soon!`)
   })
-
-  // sysmsg.on('SMT_GQUEST_URGENT_NOTIFY', (params) => {
-  //   // TODO: rally notification is broken
-  //   var d = new Date()
-  //   var today = d.getDay()
-  //   if (today !== 2 && today !== 5) {
-  //     ipc.send('rally', `@rally BAM spawning soon!`)
-  //   } else {
-  //     ipc.send('rally', `@rally (PVP) BAM spawning soon!`)
-  //   }
-  // })
 
   /****************
    * Misc Notices *
