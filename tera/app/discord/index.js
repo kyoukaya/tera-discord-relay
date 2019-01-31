@@ -224,7 +224,7 @@ module.exports = function Discord (dispatch, config) {
     var className = modelToClass(event.model)
 
     if (currentApplicants.has(event.name)) {
-      ipc.send('guildapp', `@here ` + event.name + ` (Level ` + event.level + ` ` + className + `) applied to the guild. Their message: ` + messageMap.get(event.name))
+      ipc.send('guildapp', `${event.name} (Level ${event.level} ${className}) applied to the guild. Their message: ${messageMap.get(event.name)}`)
     }
   })
 

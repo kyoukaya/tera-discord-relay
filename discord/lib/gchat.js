@@ -121,6 +121,10 @@ module.exports = function gchatModule (app, config) {
       U.sendMessge(channel, U.emojify(U.unHtml(message)), { disable_everyone: true })
     })
 
+    ipc.on('guildapp', (message) => {
+      U.sendMessge(channel, U.emojify(U.toDiscord(U.unHtml(message), server)))
+    })
+
     bot.on('message', (message) => {
       if (message.channel.id !== channel.id) return
       if (message.author.id === bot.user.id) return
