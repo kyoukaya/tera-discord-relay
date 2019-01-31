@@ -1,12 +1,11 @@
 { "email": "tera-bot@discord.gg"
 , "pass": "password"
 , "character": "Discord.Bot"
-, "host": "208.67.49.68"
-, "port": 10001
+, "host": "103.80.216.173"
+, "port": 7801
 , "modules":
-  { "discord": { "socketName": "tera-discord-ipc" } 
-  , "gquest": { "(optional; automatically completes gquests - remove entire line to disable)" }
+  { "discord": { "socketName": "tera-discord-ipc" }
   }
-, "protocolVersion": 331937
-, "patchVersion": 6905
+, "protocolVersion": 343319
+, "patchVersion": 9901
 }

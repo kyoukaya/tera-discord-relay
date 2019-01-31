@@ -5,6 +5,6 @@
 , "server-id": "111222333444555666"
 , "channels":
   { "gchat": "111222333444555666"
-  , "entry": "(optional; remove entire line to disable)"
+  , "lfg": "(optional; remove entire line to disable)"
   }
 }
