@@ -69,7 +69,7 @@ function escape (str) {
   const wordRegex = new RegExp('(' + words.map(escapeRegExp).join('|') + ')', 'gi')
 
   return (escapeHtml(str)
-    .replace(wordRegex, match => match[0] + '​' + match.slice(1)) // Zero-width space
+    .replace(wordRegex, match => match[0] + '&#8203;' + match.slice(1)) // Zero-width space
     .replace(/w-w/gi, match => match.split('-').join('-&#8206;'))
     .replace(/w{3,}/gi, match => match.split('').join('&#8206;'))
     .replace(/w w w/gi, match => match.split(' ').join('&#8206; '))
