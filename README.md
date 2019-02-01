@@ -32,7 +32,7 @@ You'll need:
 Open up a terminal window and go to a place where you want to put the bot files. Then run:
 
 ```sh
-git clone https://github.com/meishuu/tera-discord-relay.git
+git clone git@github.com:kyoukaya/tera-discord-relay.git
 cd tera-discord-relay
 npm install
 ```
@@ -98,18 +98,6 @@ npm install tera-proxy/tera-data
 
 If the console is throwing up errors about certain packets not being defined, you may need to edit the (protocolVersion).map file and add them;
 ```
-C_GUILD_APPLY_LIST
-C_REQUEST_GUILD_INFO
-C_REQUEST_FINISH_GUILD_QUES
-C_DUNGEON_CLEAR_COUNT_LIST
-S_DUNGEON_CLEAR_COUNT_LIST
-S_PING
-S_GUILD_INFO
-S_GUILD_MEMBER_LIST
 S_GUILD_QUEST_LIST
 S_GUILD_APPLY_LIST
-S_GUILD_APPLY_COUNT
-S_SHOW_ITEM_TOOLTIP
-S_UPDATE_GUILD_QUEST_STATUS
-S_USER_PAPERDOLL_INFO
 ```
