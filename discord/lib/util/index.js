@@ -137,7 +137,7 @@ function fromDiscord (message, server) {
       return '@' + ((m && m.name) || '(???)')
     })
     // :emoji:
-    .replace(/<(a|):(\w+):(\d+)>/g, (_, mention) => ':' + mention + ':')
+    .replace(/<(a|):(\w+):(\d+)>/g, (a,b, mention) => ':' + mention + ':')
   )
 }
 
