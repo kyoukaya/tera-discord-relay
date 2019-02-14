@@ -1,4 +1,4 @@
-{ "email": "tera-bot@discord.gg"
+{ "email": "tera-bot1"
 , "pass": "password"
 , "character": "Discord.Bot"
 , "host": "103.80.216.173"
@@ -6,6 +6,6 @@
 , "modules":
   { "discord": { "socketName": "tera-discord-ipc" }
   }
-, "protocolVersion": 343319
-, "patchVersion": 9901
+, "protocolVersion": 344305
+, "patchVersion": 7907
 }
