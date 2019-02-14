@@ -1,8 +1,8 @@
-const emoji = require('./emoji');
+const emoji = require('./emoji')
 
 // helpers
-function escapeRegExp(s) {
-  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+function escapeRegExp (s) {
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 const unHtml = (() => {
@@ -10,19 +10,19 @@ const unHtml = (() => {
     'quot': '"',
     'amp': '&',
     'lt': '<',
-    'gt': '>',
-  };
+    'gt': '>'
+  }
 
-  return function unHtml(s) {
+  return function unHtml (s) {
     return (s
       .replace(/<.*?>/g, '')
       .replace(/&(quot|amp|lt|gt);/g, (_, $1) => replacements[$1])
-    );
-  };
-})();
+    )
+  }
+})()
 
-function emojify(s) {
-  return emoji.replaceColons(s);
+function emojify (s) {
+  return emoji.replaceColons(s)
 }
 
 const unemojify = (() => {
@@ -39,106 +39,110 @@ const unemojify = (() => {
     stuck_out_tongue: ':P',
     sunglasses: '8)',
     unamused: ':s',
-    wink: ';)',
-  };
-
-  const regex = new RegExp(`:(${Object.keys(shortcuts).join('|')}):`, 'g');
-
-  return function unemojify(s) {
-    return emoji.replaceUnicode(s).replace(regex, (_, $1) => shortcuts[$1]);
-  };
-})();
-
-function replaceAll(string, search, replace) {
-  return string.replace(new RegExp(escapeRegExp(search), 'gi'), replace);
-}
-
-function getServer(bot, id) {
-  const server = bot.guilds.get(id);
-  if (!server) {
-    console.error('server "%s" not found', id);
-    console.error('servers:');
-    bot.guilds.forEach((s, id) => console.error('- %s (%s)', s.name, id));
-    return null;
+    wink: ';)'
   }
-  return server;
+
+  const regex = new RegExp(`:(${Object.keys(shortcuts).join('|')}):`, 'g')
+
+  return function unemojify (s) {
+    return emoji.replaceUnicode(s).replace(regex, (_, $1) => shortcuts[$1])
+  }
+})()
+
+function replaceAll (string, search, replace) {
+  return string.replace(new RegExp(escapeRegExp(search), 'gi'), replace)
 }
 
-function getTextChannel(server, id) {
-  const channel = server.channels.get(id);
+function getServer (bot, id) {
+  const server = bot.guilds.get(id)
+  if (!server) {
+    console.error('server "%s" not found', id)
+    console.error('servers:')
+    bot.guilds.forEach((s, id) => console.error('- %s (%s)', s.name, id))
+    return null
+  }
+  return server
+}
+
+function getTextChannel (server, id) {
+  const channel = server.channels.get(id)
   if (!channel || channel.type !== 'text') {
-    console.error('text channel "%s" not found', id);
-    console.error('channels:');
+    console.error('text channel "%s" not found', id)
+    console.error('channels:')
     server.channels.forEach((c, id) => {
       if (c.type !== 'text') {
-        console.error('- #%s (%s)', c.name, id);
+        console.error('- #%s (%s)', c.name, id)
       }
-    });
-    return null;
+    })
+    return null
   }
-  return channel;
+  return channel
 }
 
-function getName(server, user) {
-  const details = server.members.get(user && user.id);
-  return (details && details.nickname) || (user && user.username) || '(???)';
+function getName (server, user) {
+  const details = server.members.get(user && user.id)
+  return (details && details.nickname) || (user && user.username) || '(???)'
 }
 
-function toDiscord(message, server) {
+function toDiscord (message, server) {
   // convert @mention
   // 1 - nicknames
   server.members.forEach(member => {
     if (member.nickname != null) {
-      message = replaceAll(message, '@' + member.nickname, member.toString());
+      message = replaceAll(message, '@' + member.nickname, member.toString())
     }
-  });
+  })
 
   // 2 - usernames
   server.members.forEach(member => {
-    message = replaceAll(message, '@' + member.user.username, member.toString());
-  });
+    message = replaceAll(message, '@' + member.user.username, member.toString())
+  })
 
   // convert #channel
   server.channels.forEach(channel => {
     if (channel.type === 'text') {
-      message = replaceAll(message, '#' + channel.name, channel.toString());
+      message = replaceAll(message, '#' + channel.name, channel.toString())
     }
-  });
+  })
 
   // convert @role
   server.roles.forEach(role => {
-    message = replaceAll(message, '@' + role.name, role.toString());
-  });
+    message = replaceAll(message, '@' + role.name, role.toString())
+  })
 
   // TODO convert :emoji:
   server.emojis.forEach(emoji => {
-    message = replaceAll(message, ':' + emoji.name + ':', emoji.toString());
-  });
+    message = replaceAll(message, ':' + emoji.name + ':', emoji.toString())
+  })
 
   // return
-  return message;
+  return message
 }
 
-function fromDiscord(message, server) {
+function fromDiscord (message, server) {
   return (message
     // @user, @!user
     .replace(/<@!?(\d+)>/g, (_, mention) => {
-      const m = server.members.get(mention);
-      return '@' + ((m && getName(server, m.user)) || '(???)');
+      const m = server.members.get(mention)
+      return '@' + ((m && getName(server, m.user)) || '(???)')
     })
     // #channel
     .replace(/<#(\d+)>/g, (_, mention) => {
-      const m = server.channels.get(mention);
-      return '#' + ((m && m.name) || '(???)');
+      const m = server.channels.get(mention)
+      return '#' + ((m && m.name) || '(???)')
     })
     // @role
     .replace(/<@&(\d+)>/g, (_, mention) => {
-      const m = server.roles.get(mention);
-      return '@' + ((m && m.name) || '(???)');
+      const m = server.roles.get(mention)
+      return '@' + ((m && m.name) || '(???)')
     })
     // :emoji:
     .replace(/<:(\w+):(\d+)>/g, (_, mention) => ':' + mention + ':')
-  );
+  )
+}
+
+function sendMessge (channel, message, options) {
+  channel.send(message, options).catch(console.error)
 }
 
 // exports
@@ -153,4 +157,5 @@ module.exports = {
   getName,
   toDiscord,
   fromDiscord,
-};
+  sendMessge
+}

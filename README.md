@@ -1,4 +1,6 @@
 ﻿# tera-discord-relay
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 
 Chat relay between a Discord channel and TERA /guild chat.
 
@@ -9,7 +11,7 @@ Chat relay between a Discord channel and TERA /guild chat.
 You'll need:
 - [Node.js](https://nodejs.org/)
 - [Git](https://git-scm.com/)
-- a Discord account (preferably a [bot account](https://discordapp.com/developers/docs/topics/oauth2#bots))
+- a Discord [bot account](https://discordapp.com/developers/docs/topics/oauth2#bots)
 - a TERA account
 
 ### Discord
@@ -20,20 +22,9 @@ You'll need:
 1. After app creation, click "Create a Bot User" on the application's setting screen. Make note of the bot ID and the token.
 1. Invite the bot to your server by going to this link: <https://discordapp.com/api/oauth2/authorize?client_id={{BOT_ID}}&scope=bot&permissions=0> (but replace `{{BOT_ID}}` with your bot's ID).
 
-#### User Account
-
-**Note:** This *really* isn't recommended. Also, I'm going to assume you're already on the Discord you want to run the bot on.
-
-1. Log into Discord with the user account.
-1. Hit <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>.
-1. Open the "Application" tab. You may need to click on the "»" to find it if the window is too small.
-1. Open "Local Storage" and click on "https://discordapp.com". (This will be different for PTB and Canary.)
-1. Look for "token" on the left side. Your token is the value on the right side.
-
 ### TERA
 
 - Join the desired guild on the desired character to use as the bot relay.
-- Turn off account armor.
 - If you want the relay to be able to complete guild quests, give it a role and assign the appropriate permissions in game.
 
 ## Installation
@@ -41,7 +32,7 @@ You'll need:
 Open up a terminal window and go to a place where you want to put the bot files. Then run:
 
 ```sh
-git clone https://github.com/meishuu/tera-discord-relay.git
+git clone git@github.com:kyoukaya/tera-discord-relay.git
 cd tera-discord-relay
 npm install
 ```
@@ -62,12 +53,13 @@ Also note that in order for the rally notification to work for members in Discor
 
 ### TERA
 
-- `host` and `port` will come from your region's server list. You can get links to the server lists on the [`tera-proxy-sls` README](https://github.com/meishuu/tera-proxy-sls#server-urls).
+- `host` and `port` will come from your region's server list. You can get links to the servers from the [`caali-hackerman/tera-proxy` repo](https://github.com/caali-hackerman/tera-proxy/blob/master/bin/regions.js).
 
 Also, TERA has a few version numbers you might need to change for big patches. Open up [`tera/config/config.json`](tera/config/config-sample.json) and look for these:
 
 - `patchVersion` is usually the major and minor patch number put together. For instance, if you launch TERA, go to server select, and see "56.03.02 EN2" at the bottom, try setting `patchVersion` to 5603. If that doesn't work, try 9901.
-- `protocolVersion` is not so easy to check, but if you run [tera-proxy](https://github.com/meishuu/tera-proxy) it'll display the protocol version when you connect to it.
+- `protocolVersion` is not so easy to check, but if you run `tera-proxy` it'll display the protocol version when you connect to it.
+- Alternatively you can log the `C_LOGIN_ARBITER` packet of an actual login with `tera-proxy`.
 
 ## Running
 
@@ -101,29 +93,11 @@ npm install
 Every major version patch, TERA has some versioning info that needs changing. See the section above on TERA configuration for more info. To update tera-data, simply run:
 
 ```sh
-npm install meishuu/tera-data
+npm install tera-proxy/tera-data
 ```
 
-If the console is throwing up errors about certain packets not being defined, you may need to edit the (protocolVersion).map file and add them. The typical ones that you'll need are (NA mappings are included in the file [NA Additional Opcodes](https://github.com/trini0n/tera-discord-relay/blob/master/NA%20Additional%20Opcodes%20(330802))):
+If the console is throwing up errors about certain packets not being defined, you may need to edit the (protocolVersion).map file and add them;
 ```
-C_GUILD_APPLY_LIST
-C_REQUEST_GUILD_INFO
-C_REQUEST_FINISH_GUILD_QUES
-C_DUNGEON_CLEAR_COUNT_LIST
-S_DUNGEON_CLEAR_COUNT_LIST
-S_PING
-S_GUILD_INFO
-S_GUILD_MEMBER_LIST
 S_GUILD_QUEST_LIST
 S_GUILD_APPLY_LIST
-S_GUILD_APPLY_COUNT
-S_SHOW_ITEM_TOOLTIP
-S_UPDATE_GUILD_QUEST_STATUS
-S_USER_PAPERDOLL_INFO
 ```
-
-## MT-Directory
-
-[MT-Directory](http://mt-directory.herokuapp.com) is a database created to track and log character's stats, gear, and dungeon clears. Requires [guild-app-inspector](https://github.com/trini0n/guild-app-inspector) and a proper config file that links to a MongoDB. More details soonTM.
-
-Errors regarding `[proxy] failed to load guild-app-inspector` can be ignored if you're not using the module.
