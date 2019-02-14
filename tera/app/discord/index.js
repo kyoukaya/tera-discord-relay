@@ -184,10 +184,6 @@ module.exports = function Discord (dispatch, config) {
     }
   }, REFRESH_TIMER)
 
-  dispatch.hook('S_LOGIN', 12, (event) => {
-    myName = event.name
-  })
-
   dispatch.hook('S_CHAT', 2, (event) => {
     if (event.channel === 2 && event.authorName !== myName) {
       ipc.send('chat', event.authorName, event.message)
@@ -211,6 +207,7 @@ module.exports = function Discord (dispatch, config) {
     myName = event.name
     player = event.name
     myPlayerId = event.playerId
+    ipc.send('sysmsg', `${myName} logged in.`)
   })
 
   dispatch.hook('S_ANSWER_INTERACTIVE', 2, event => {
