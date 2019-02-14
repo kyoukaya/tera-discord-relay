@@ -8,6 +8,7 @@
     "discord.js": "^11.4.2",
     "tera-auth-ticket-sea": "github:kyoukaya/tera-auth-ticket-sea",
     "tera-data": "github:tera-proxy/tera-data",
+    "tera-data-parser": "github:tera-proxy/tera-data-parser",
     "tera-proxy-game": "github:kyoukaya/tera-proxy-game"
   },
   "engines": {
