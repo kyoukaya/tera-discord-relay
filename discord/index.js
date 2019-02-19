@@ -27,6 +27,10 @@ bot.on('disconnect', () => {
   console.log('disconnected')
 })
 
+bot.on('error', (error) => {
+  console.error(error)
+})
+
 // set up ipc
 const IpcModule = require('./lib/ipc')
 const ipc = new IpcModule(config['socket-name'])
