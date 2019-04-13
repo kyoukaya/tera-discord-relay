@@ -6,6 +6,6 @@
 , "modules":
   { "discord": { "socketName": "tera-discord-ipc" }
   }
-, "protocolVersion": 344305
-, "patchVersion": 7907
+, "protocolVersion": 345891
+, "patchVersion": 8004
 }
