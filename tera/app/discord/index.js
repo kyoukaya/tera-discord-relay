@@ -283,26 +283,26 @@ module.exports = function Discord (dispatch, config) {
     requestGuildInfo(GINFO_TYPE.members)
   })
 
-  sysmsg.on('SMT_GUILD_MEMBER_LOGON', (params) => {
-    ipc.send('sysmsg', `${params['UserName']} logged in. Message: ${params['Comment']}`)
-    requestGuildInfo(GINFO_TYPE.members)
-    dispatch.toServer('C_REQUEST_USER_PAPERDOLL_INFO', 1, {
-      name: params['UserName']
-    })
-  })
+  // sysmsg.on('SMT_GUILD_MEMBER_LOGON', (params) => {
+  //   ipc.send('sysmsg', `${params['UserName']} logged in. Message: ${params['Comment']}`)
+  //   requestGuildInfo(GINFO_TYPE.members)
+  //   dispatch.toServer('C_REQUEST_USER_PAPERDOLL_INFO', 1, {
+  //     name: params['UserName']
+  //   })
+  // })
 
-  sysmsg.on('SMT_GUILD_MEMBER_LOGON_NO_MESSAGE', (params) => {
-    ipc.send('sysmsg', `${params['UserName']} logged in.`)
-    requestGuildInfo(GINFO_TYPE.members)
-    dispatch.toServer('C_REQUEST_USER_PAPERDOLL_INFO', 1, {
-      name: params['UserName']
-    })
-  })
+  // sysmsg.on('SMT_GUILD_MEMBER_LOGON_NO_MESSAGE', (params) => {
+  //   ipc.send('sysmsg', `${params['UserName']} logged in.`)
+  //   requestGuildInfo(GINFO_TYPE.members)
+  //   dispatch.toServer('C_REQUEST_USER_PAPERDOLL_INFO', 1, {
+  //     name: params['UserName']
+  //   })
+  // })
 
-  sysmsg.on('SMT_GUILD_MEMBER_LOGOUT', (params) => {
-    ipc.send('sysmsg', `${params['UserName']} logged out.`)
-    requestGuildInfo(GINFO_TYPE.members)
-  })
+  // sysmsg.on('SMT_GUILD_MEMBER_LOGOUT', (params) => {
+  //   ipc.send('sysmsg', `${params['UserName']} logged out.`)
+  //   requestGuildInfo(GINFO_TYPE.members)
+  // })
 
   sysmsg.on('SMT_GC_SYSMSG_GUILD_CHIEF_CHANGED', (params) => {
     ipc.send('sysmsg', `${params['Name']} is now the Guild Master.`)
